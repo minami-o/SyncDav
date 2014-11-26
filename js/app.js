@@ -6,29 +6,44 @@ var App = function App() {
 
   var store = null;
   var info = null;
-  var fillButton, resetButton;
+  var saveConfigButton, fillButton, resetButton;
 
   var init = function init() {
     info = document.getElementById('info');
+    saveConfigButton = document.getElementById('saveConfig');
     fillButton = document.getElementById('fillDS');
     resetButton = document.getElementById('resetDS');
 
+    if(localStorage.getItem('url') != null) {
+      document.getElementById('url').value = localStorage.getItem('url');
+      document.getElementById('user').value = localStorage.getItem('user');
+      document.getElementById('passwd').value = localStorage.getItem('passwd');
+    }
+
+    saveConfigButton.addEventListener('click', handleEvent);
     fillButton.addEventListener('click', handleEvent);
     resetButton.addEventListener('click', handleEvent);
   };
 
   function handleEvent(evt) {
     var btn = evt.target.id;
-    var accountData = {
-      url: document.getElementById('url').value,
-      user: document.getElementById('user').value,
-      password: document.getElementById('passwd').value
-    };
 
     switch (btn) {
+      case 'saveConfig':
+        localStorage.setItem('url', document.getElementById('url').value);
+        localStorage.setItem('user', document.getElementById('user').value);
+        localStorage.setItem('passwd', document.getElementById('passwd').value);
+        
+        alert('Config saved');
+        break;
       case 'fillDS':
         fillButton.disabled = true;
 
+        var accountData = {
+          url: localStorage.getItem('url'),
+          user: localStorage.getItem('user'),
+          password: localStorage.getItem('passwd')
+        };
         var openedDAVConnection = jsDAVlib.getConnection(accountData);
         openedDAVConnection.onready = function() {
           console.log('connectionInfo: ' +
