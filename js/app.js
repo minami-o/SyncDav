@@ -114,36 +114,6 @@ var App = function App() {
     }
   }
 
-  function initDS() {
-    function storeError() {
-      info.textContent = 'Error getting store';
-    }
-
-    if (!navigator.getDataStores) {
-      info.textContent = 'NO DataStore API!';
-      return;
-    }
-
-    navigator.getDataStores(DS_NAME).then(function(ds) {
-      if (!ds || ds.length < 1) {
-        storeError();
-        return;
-      }
-      ds.forEach(function onDs(datastore) {
-        if (datastore.owner.indexOf('provider3')) {
-          store = datastore;
-          console.log('Got store ' + store.owner);
-        }
-      });
-
-      store.getLength().then(function(count) {
-        info.textContent = count + ' elements';
-      });
-    }, function() {
-      storeError();
-    });
-  }
-
   return {
     init: init
   };
