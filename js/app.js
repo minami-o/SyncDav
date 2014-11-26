@@ -43,44 +43,95 @@ var App = function App() {
             var openedDAVMainResource = res;
 
             var contactsList = openedDAVMainResource.get().data;
-            var contactsResource = [];
+            var nbContactsSaved = 0;
+            var nbContactsNoSaved = 0;
             for (var i = 0; i < contactsList.length; i++) {
               openedDAVConnection.getResource(contactsList[i].href, function(res, e) {
-                var vcard = res.contents.split('\r\n');
-                var contact = new mozContact();
-                for (var j = 0; j < vcard.length; j++) {
-                  if (/^N:/.test(vcard[j])) {
-                    var name = vcard[j].split(':')[1].split(';');
-                    contact.familyName = [name[0]];
-                    contact.givenName = [name[1]];
-                    contact.additionalName = [name[2]];
-                    contact.honorificPrefix = [name[3]];
-                    contact.honorificSuffix = [name[4]];
-                  } else if (/^FN:/.test(vcard[j])) {
-                    var name = vcard[j].split(':');
-                    contact.name = [name[1]];
-                  } else if (/^TEL;/.test(vcard[j])) {
-                    var allTel = vcard[j].split(';');
-                    var tel = allTel[1].split(':');
-                    contact.tel = [{
-                      type: [tel[0].split('=')[1]],
-                      value: tel[1]
-                    }];
+                var vcard = res.contents;
+                VCF.parse(vcard, function(data) {
+                  var contact = new mozContact();
+                  
+                  if(data.fn) {
+                    contact.name = [data.fn];
                   }
-                }
-
-                var saving = navigator.mozContacts.save(contact);
-                saving.onsuccess = function() {
-                  console.log('new contact saved');
-                };
-                saving.onerror = function(err) {
-                  console.error(err);
-                };
+                  
+                  if(data.n) {
+                    if(data.n['family-name']) {
+                      contact.familyName = data.n['family-name'];
+                    }
+                    
+                    if(data.n['given-name']) {
+                      contact.givenName = data.n['given-name'];
+                    }
+                    
+                    if(data.n['additional-name']) {
+                      contact.additionalName = data.n['additional-name'];
+                    }
+                    
+                    if(data.n['honorific-prefix']) {
+                      contact.honorificPrefix = data.n['honorific-prefix'];
+                    }
+                    
+                    if(data.n['honorific-suffix']) {
+                      contact.honorificSuffix = data.n['honorific-suffix'];
+                    }
+                  }
+                  
+                  if(data.nickname) {
+                    contact.nickname = data.nickname;
+                  }
+                  
+                  if(data.email) {
+                    contact.email = data.email;
+                  }
+                  
+                  if(data.tel) {
+                    contact.tel = data.tel;
+                  }
+                  
+                  if(data.org) {
+                    contact.org = data.org;
+                  }
+                  
+                  if(data.bday) {
+                    contact.bday = data.bday;
+                  }
+                  
+                  if(data.note) {
+                    contact.bday = data.note;
+                  }
+                  
+                  if(data.sex) {
+                    contact.sex = data.sex;
+                  }
+                  
+                  if(data.gender) {
+                    contact.genderIdentity = data.gender;
+                  }
+                  
+                  var saving = navigator.mozContacts.save(contact);
+                  saving.onsuccess = function() {
+                    console.log('New contact saved');
+                    nbContactsSaved++;
+                    if(nbContactsSaved + nbContactsNoSaved === contactsList.length) {
+                      alert(nbContactsSaved + ' / ' + contactsList.length + ' contact(s) saved');
+                      fillButton.disabled = false;
+                    }
+                  };
+                  saving.onerror = function(err) {
+                    console.error(err);
+                    nbContactsNoSaved++;
+                    if(nbContactsSaved + nbContactsNoSaved === contactsList.length) {
+                      alert(nbContactsSaved + ' / ' + contactsList.length + ' contact(s) saved');
+                      fillButton.disabled = false;
+                    }
+                  }
+                });
               });
             }
           });
         };
-
+        
         break;
       case 'resetDS':
         var q = confirm("Remove ALL the contacts from ? Be careful!!! There is no way back!");
