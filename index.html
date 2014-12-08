@@ -2,7 +2,22 @@
 <head>
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
   <meta charset="utf-8">
-  <title>Provider CardDAV</title>
+  <title>SyncDav</title>
+  
+  <!-- Building Blocks -->
+  <link rel="stylesheet" href="style/headers.css">
+  <link rel="stylesheet" href="style/input_areas.css">
+  <link rel="stylesheet" href="style/buttons.css">
+  <link rel="stylesheet" href="style/confirm.css">
+  <link rel="stylesheet" href="style/status.css">
+  <link rel="stylesheet" href="style/util.css">
+  
+  <style>
+    #settings, #confirmDialog, #status, #importStatus {
+      display: none;
+    }
+  </style>
+  
   <script defer src="/js/lib/jsDAVlib/src/jsDAVlib.js"></script>
   <script defer src="/js/lib/jsDAVlib/src/jsDAVXMLParser.js"></script>
   <script defer src="/js/lib/jsDAVlib/src/jsDAVConnection.js"></script>
@@ -13,33 +28,68 @@
   <script defer src="/js/app.js"></script>
 </head>
 <body>
-<section>
-  <header>
-    <h1>CardDAV contacts provider</h1>
+<section role="region" id="main">
+  <header class="fixed">
+    <h1>SyncDav</h1>
   </header>
-  <article>
-    This test app will allow you to log in into your CardDAV provider and store your contacts into an 'contacts' datastore.
+  <article class="content scrollable header">
+    <header><h2>CardDAV Client</h2></header>
+    <p>
+      <button id="sync" class="recommend">Synchronize</button>
+    </p>
+    <p>
+      <button id="reset" class="danger">Reset</button>
+    </p>
+    <p>
+      <button id="config">Settings</button>
+    </p>
   </article>
 </section>
-<section id="info"></section>
-<section id="config">
-  <div>
-    <label for="url">DAV URL</label>
-    <input type="url" name="url" id="url" value="" />
-  </div>
-  <div>
-    <label for="key">DAV User</label>
-    <input type="text" name="user" id="user" value="" />
-  </div>
-  <div>
-    <label for="key">DAV Password</label>
-    <input type="password" name="passwd" id="passwd" value="" />
-  </div>
+
+<section role="region" id="settings">
+  <header>
+    <button id="closeConfig"><span class="icon icon-close">close</span></button>
+    <menu type="toolbar">
+      <button id="saveConfig">Save</button>
+    </menu>
+    <h1>Settings</h1>
+  </header>
+  
+  <article class="content scrollable header">
+    <form>
+      <p>
+        <input type="url" name="url" placeholder="https://mycarddavurl" id="url" required>
+        <button type="reset">Clear</button>
+      </p>
+      <p>
+        <input type="text" name="user" placeholder="username" id="user" required>
+        <button type="reset">Clear</button>
+      </p>
+      <p>
+        <input type="password" name="passwd" placeholder="password" id="passwd" required>
+        <button type="reset">Clear</button>
+      </p>
+    </form>
+  </article>
 </section>
-<section id="commands">
-  <button id="saveConfig">Save config</button>
-  <button id="fillDS">Fill DataStore</button>
-  <button id="resetDS">Reset DataStore</button>
+
+<section id="confirmDialog">
+  <form role="dialog" data-type="confirm">
+    <section>
+      <h1>Confirmation</h1>
+      <p>Remove ALL contacts ? Be careful!!! There is no way back!</p>
+    </section>
+    <menu>
+      <button>Cancel</button>
+      <button class="danger" id="resetConfirmed">Reset</button>
+    </menu>
+  </form>
+</section>
+
+<section role="status" id="status"><p>Status</p></section>
+
+<section role="status" id="syncStatus">
+  <p><span id="nbImported">0</span> / <span id="nbContacts">0</span> contact(s) synchronized</p>
 </section>
 </body>
 </html>
