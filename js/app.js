@@ -148,6 +148,10 @@ var App = function App() {
                     contact.genderIdentity = data.gender;
                   }
                   
+                  if(data.photo) {
+                    contact.photo = data.photo;
+                  }
+                  
                   var saving = navigator.mozContacts.save(contact);
                   saving.onsuccess = function() {
                     console.log('New contact saved');
