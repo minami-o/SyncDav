@@ -105,6 +105,11 @@ var VCF;
                         value: value
                     });
 
+                } else if(key == 'PHOTO') { // 6.2.4
+                    setAttr({[new Blob([this.parsePhoto(value)], {type: 'image/jpeg'})]});
+//                    setAttr({value: this.parsePhoto(value)});
+//                    setAttr(this.parsePhoto(value));
+                    
                 } else if(key == 'IMPP') { // 6.4.3
                     // RFC 6350 doesn't define TYPEs for IMPP addresses.
                     // It just seems odd to me to have multiple email addresses and phone numbers,
@@ -144,11 +149,7 @@ var VCF;
                     });
 
                 } else if(key =='ADR'){
-                    setAttr({
-                        type: attrs.TYPE,
-                        pref: attrs.PREF,
-                        value: value
-                    });
+                    setAttr(this.parseAdr(attrs.TYPE, attrs.PREFS, value));
                     //TODO: Handle 'LABEL' field.
                 } else {
                     console.log('WARNING: unhandled key: ', key);
@@ -205,6 +206,37 @@ var VCF;
             }
             return gender;
         },
+
+        /**
+	 *
+	 *
+	 *
+	 **/
+        parsePhoto: function(value) {
+	    var photo = {};
+	    var parts = value.split(';');
+	    var parts = parts[2].split(':');
+	    photo.value = parts[1];
+	    return photo.value;
+	},
+
+          parseAdr: function(type, pref, value) {
+	      var adr = {};
+	      var parts = value.split(';');
+	      adr.type = type;
+	      adr.pref = pref;
+//	      adr.pobox = parts[0];
+//	      adr.ext = parts[1];
+	      adr.streetAddress = parts[2];
+	      adr.locality = parts[3];
+	      adr.region = parts[4];
+	      adr.postalCode = parts[5];
+	      adr.countryName = parts[6];
+
+	      return adr;
+	  },
+
+
 
         /** Date/Time parser.
          * 

@@ -137,7 +137,7 @@ var App = function App() {
                   }
                   
                   if(data.note) {
-                    contact.bday = data.note;
+                    contact.note = data.note;
                   }
                   
                   if(data.sex) {
@@ -149,7 +149,12 @@ var App = function App() {
                   }
                   
                   if(data.photo) {
+//                    contact.photo = [new Blob([data.photo], {type : 'image/jpeg'})];
                     contact.photo = data.photo;
+                  }
+                  
+                  if(data.adr) {
+                    contact.adr = data.adr;
                   }
                   
                   var saving = navigator.mozContacts.save(contact);
