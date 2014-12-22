@@ -106,7 +106,7 @@ var VCF;
                     });
 
                 } else if(key == 'PHOTO') { // 6.2.4
-                    setAttr({[new Blob([this.parsePhoto(value)], {type: 'image/jpeg'})]});
+                    setAttr({value: [new Blob([this.parsePhoto(value)], {type: 'image/jpeg'})]});
 //                    setAttr({value: this.parsePhoto(value)});
 //                    setAttr(this.parsePhoto(value));
                     

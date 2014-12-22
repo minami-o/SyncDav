@@ -149,8 +149,8 @@ var App = function App() {
                   }
                   
                   if(data.photo) {
-//                    contact.photo = [new Blob([data.photo], {type : 'image/jpeg'})];
-                    contact.photo = data.photo;
+                    contact.photo = [new Blob([data.photo], {type : 'image/jpeg'})];
+//                    contact.photo = data.photo;
                   }
                   
                   if(data.adr) {
