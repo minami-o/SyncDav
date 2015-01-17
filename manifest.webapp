@@ -17,7 +17,8 @@
       "description": "This permission is require to contact CardDAV servers"
     },
     "contacts": {
-      "access": "readwrite"
+      "access": "readwrite",
+      "description": "This permission is require to sync contacts"
     }
   }
 }
