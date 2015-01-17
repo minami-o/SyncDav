@@ -1,10 +1,16 @@
 {
   "name": "SyncDav",
+  "description": "CardDav Client For Firefox OS",
+  "version": "0.0.1",
   "type": "privileged",
   "launch_path": "/index.html",
   "icons": {
       "512": "/img/syncdav-512.png",
       "128": "/img/syncdav-128.png"
+  },
+  "developer": {
+    "name": "TuxGasy",
+    "url": "https://github.com/tuxgasy/SyncDav"
   },
   "permissions": {
     "systemXHR": {
