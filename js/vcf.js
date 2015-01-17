@@ -107,10 +107,9 @@ var VCF;
 
                 } else if(key == 'PHOTO') { // 6.2.4
                     //setAttr(this.parsePhoto(value));
-             		    setAttr(
+                   setAttr(
                       this.parsePhoto(value)
-//                        value
-             		    );
+                   );
                     
                 } else if(key == 'IMPP') { // 6.4.3
                     // RFC 6350 doesn't define TYPEs for IMPP addresses.
@@ -136,12 +135,10 @@ var VCF;
                         setAttr({ name: value });
                     }
 
-                } else if(key == 'ORG') { // 6.6.4
-                    var parts = value.split(';');
-                    setAttr({
-                        'organization-name': parts[0],
-                        'organization-unit': parts[1]
-                    });
+                } else if(key == 'ORG') { // RFC2426 3.5.5
+                  setAttr(
+                   value.split(';')
+                  );
 
                 } else if(key == 'RELATED') { // 6.6.6
                     setAttr({
@@ -210,41 +207,41 @@ var VCF;
         },
 
         /**
-	       *
-       	 *
-       	 *
-       	 **/
+         *
+         *
+         *
+         */
         parsePhoto: function(value) {
           var photos = [];
-	        var parts = value.split(';');
-    	    parts = parts[parts.length-1].split(':');
+          var parts = value.split(';');
+          parts = parts[parts.length-1].split(':');
           parts = parts[parts.length-1];
           for(i = 0; i < parts.length; i++) {
-    	      photos[i] = base64DecToArr(parts[i]);
-    	    }
+            photos[i] = base64DecToArr(parts[i]);
+          }
             return parts;
-      	},
+        },
 
         /** Address parser.
-	       *
-       	 *  based on RFC 2426
-       	 *
-       	 **/
+         *
+         *  based on RFC 2426
+         *
+         */
         parseAdr: function(type, pref, value) {
-	       var adr = {};
-	       var parts = value.split(';');
-    	    adr.type = type;
-    	    adr.pref = pref;
-//   	      adr.pobox = parts[0];
-//	        adr.ext = parts[1];
-	       adr.streetAddress = parts[2];
-    	   adr.locality = parts[3];
-    	   adr.region = parts[4];
-    	   adr.postalCode = parts[5];
-    	   adr.countryName = parts[6];
+         var adr = {};
+         var parts = value.split(';');
+          adr.type = type;
+          adr.pref = pref;
+//           adr.pobox = parts[0];
+//          adr.ext = parts[1];
+         adr.streetAddress = parts[2];
+         adr.locality = parts[3];
+         adr.region = parts[4];
+         adr.postalCode = parts[5];
+         adr.countryName = parts[6];
 
           return adr;
-	      },
+        },
 
 
 
