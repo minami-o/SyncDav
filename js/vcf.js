@@ -105,6 +105,11 @@ var VCF;
                         value: value
                     });
 
+                } else if(key == 'PHOTO') { // 6.2.4
+                   setAttr(
+                      this.parsePhoto(value)
+                   );
+                    
                 } else if(key == 'IMPP') { // 6.4.3
                     // RFC 6350 doesn't define TYPEs for IMPP addresses.
                     // It just seems odd to me to have multiple email addresses and phone numbers,
@@ -130,11 +135,9 @@ var VCF;
                     }
 
                 } else if(key == 'ORG') { // 6.6.4
-                    var parts = value.split(';');
-                    setAttr({
-                        'organization-name': parts[0],
-                        'organization-unit': parts[1]
-                    });
+                  setAttr(
+                   value.split(';')
+                  );
 
                 } else if(key == 'RELATED') { // 6.6.6
                     setAttr({
@@ -144,11 +147,7 @@ var VCF;
                     });
 
                 } else if(key =='ADR'){
-                    setAttr({
-                        type: attrs.TYPE,
-                        pref: attrs.PREF,
-                        value: value
-                    });
+                    setAttr(this.parseAdr(attrs.TYPE, attrs.PREFS, value));
                     //TODO: Handle 'LABEL' field.
                 } else {
                     console.log('WARNING: unhandled key: ', key);
@@ -206,6 +205,46 @@ var VCF;
             return gender;
         },
 
+        /** Photo parser.
+         *
+         * based on RFC 6350 6.2.4
+         *
+         */
+        parsePhoto: function(value) {
+          var photos = [];
+          var parts = value.split(';');
+          parts = parts[parts.length-1].split(':');
+          parts = parts[parts.length-1];
+          for(i = 0; i < parts.length; i++) {
+            photos[i] = base64DecToArr(parts[i]);
+          }
+            return parts;
+        },
+
+        /** Address parser.
+         *
+         *  based on RFC 6350 6.3.1
+	 *  pobox & ext are currently not defined in mozContact
+         *
+         */
+        parseAdr: function(type, pref, value) {
+         var adr = {};
+         var parts = value.split(';');
+         adr.type = type;
+         adr.pref = pref;
+//         adr.pobox = parts[0];
+//         adr.ext = parts[1];
+         adr.streetAddress = parts[2];
+         adr.locality = parts[3];
+         adr.region = parts[4];
+         adr.postalCode = parts[5];
+         adr.countryName = parts[6];
+
+          return adr;
+        },
+
+
+
         /** Date/Time parser.
          * 
          * This implements only the parts of ISO 8601, that are
@@ -231,6 +270,9 @@ var VCF;
         dateTruncatedMDRE: /^\-{2}(\d{2})(\d{2})$/, // (--0131)
         dateTruncatedDRE: /^\-{3}(\d{2})$/, // (---31)
 
+        // alternate date format
+        dateAltRE: /^(\d{4})-(\d{2})-(\d{2})$/, // (1970-01-31)
+
         /** TIME **/
 
         // (Note: it is unclear to me which of these are supposed to support
@@ -246,6 +288,8 @@ var VCF;
         // truncated representation from [ISO.8601.2000], see above.
         timeTruncatedMSRE: /^\-{2}(\d{2})(\d{2})([+\-]\d+|Z|)$/, // (--5930)
         timeTruncatedSRE: /^\-{3}(\d{2})([+\-]\d+|Z|)$/, // (---30)
+        // alternate time format
+        timeAltRE: /^(\d{2}):(\d{2}):(\d{2})([+\-]\d{2}:\d{2})$/, // (23:59:30...)
 
         parseDate: function(data) {
             var md;
@@ -260,6 +304,8 @@ var VCF;
                 m = md[1]; d = md[2];
             } else if((md = data.match(this.dateTruncatedDRE))) {
                 d = md[1];
+            } else if((md = data.match(this.dateAltRE))) {
+                y = md[1]; m = md[2]; d = md[3];
             } else {
                 console.error("WARNING: failed to parse date: ", data);
                 return null;
@@ -289,6 +335,9 @@ var VCF;
             } else if((md = data.match(this.timeTruncatedSRE))) {
                 s = md[1];
                 tz = md[2];
+            } else if((md = data.match(this.timeAltRE))) {
+                h = md[1]; m = md[2]; s = md[3];
+                tz = md[4];
             } else {
                 console.error("WARNING: failed to parse time: ", data);
                 return null;

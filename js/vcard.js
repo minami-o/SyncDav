@@ -64,7 +64,11 @@ var VCard;
 	          }
 
 	          if(this.tel) {
-		            validateCompoundWithType('email', this.tel);
+		            validateCompoundWithType('tel', this.tel);
+	          }
+
+	          if(this.adr) {
+		            validateCompoundWithType('adr', this.tel);
 	          }
 
 	          if(! this.uid) {
@@ -190,12 +194,13 @@ var VCard;
         // FIXME: these aren't actually defined anywhere. just very commmon.
         //        maybe there should be more?
         emailType: ["work", "home", "internet"],
+        adrType: ["work", "home", "other"],
         langType: ["work", "home"],
         
     };
 
     VCard.allKeys = [
-        'fn', 'n', 'nickname', 'photo', 'bday', 'anniversary', 'gender',
+        'fn', 'n', 'nickname', 'photo', 'bday', 'anniversary', 'gender', 'adr',
         'tel', 'email', 'impp', 'lang', 'tz', 'geo', 'title', 'role', 'logo',
         'org', 'member', 'related', 'categories', 'note', 'prodid', 'rev',
         'sound', 'uid'
@@ -203,6 +208,7 @@ var VCard;
 
     VCard.multivaluedKeys = {
         email: true,
+	adr: true,
         tel: true,
         geo: true,
         title: true,
@@ -212,7 +218,8 @@ var VCard;
         member: true,
         related: true,
         categories: true,
-        note: true
+        note: true,
+	photo: true,
     };
 
 })();
