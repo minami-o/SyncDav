@@ -184,10 +184,9 @@ var App = function App() {
                   }
 
                   if(data.photo) {
-            		    for(i = 0; i < data.photo.length; i++) {
-            		      data.photo[i] = base64DecToArr(data.photo[i]);
-	                  }
-
+            	    for(i = 0; i < data.photo.length; i++) {
+            	      data.photo[i] = base64DecToArr(data.photo[i]);
+	            }
                     contact.photo = [new Blob(data.photo)];
                   }
 

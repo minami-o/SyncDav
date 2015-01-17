@@ -106,7 +106,6 @@ var VCF;
                     });
 
                 } else if(key == 'PHOTO') { // 6.2.4
-                    //setAttr(this.parsePhoto(value));
                    setAttr(
                       this.parsePhoto(value)
                    );
@@ -135,7 +134,7 @@ var VCF;
                         setAttr({ name: value });
                     }
 
-                } else if(key == 'ORG') { // RFC2426 3.5.5
+                } else if(key == 'ORG') { // 6.6.4
                   setAttr(
                    value.split(';')
                   );
@@ -206,9 +205,9 @@ var VCF;
             return gender;
         },
 
-        /**
+        /** Photo parser.
          *
-         *
+         * based on RFC 6350 6.2.4
          *
          */
         parsePhoto: function(value) {
@@ -224,16 +223,17 @@ var VCF;
 
         /** Address parser.
          *
-         *  based on RFC 2426
+         *  based on RFC 6350 6.3.1
+	 *  pobox & ext are currently not defined in mozContact
          *
          */
         parseAdr: function(type, pref, value) {
          var adr = {};
          var parts = value.split(';');
-          adr.type = type;
-          adr.pref = pref;
-//           adr.pobox = parts[0];
-//          adr.ext = parts[1];
+         adr.type = type;
+         adr.pref = pref;
+//         adr.pobox = parts[0];
+//         adr.ext = parts[1];
          adr.streetAddress = parts[2];
          adr.locality = parts[3];
          adr.region = parts[4];
