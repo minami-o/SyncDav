@@ -219,7 +219,7 @@ var VCard;
         related: true,
         categories: true,
         note: true,
-//	photo: true,
+	photo: true,
     };
 
 })();
