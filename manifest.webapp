@@ -1,7 +1,7 @@
 {
   "name": "SyncDav",
   "description": "CardDav Client For Firefox OS",
-  "version": "0.0.1",
+  "version": "0.0.1b",
   "type": "privileged",
   "launch_path": "/index.html",
   "icons": {
