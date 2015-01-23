@@ -112,7 +112,7 @@ var App = function App() {
 
             var openedDAVMainResource = res;
 
-            var contactsList = openedDAVMainResource.get().data;
+            var contactsList = openedDAVMainResource.getContents();
             var nbContactsSaved = 0;
             var nbContactsNoSaved = 0;
             
